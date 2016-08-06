@@ -1,0 +1,19 @@
+body{
+    padding: 0px 40px;
+}
+.row{
+    padding: 10px;
+}
+table{
+    td{
+        width: 20px;
+        height: 20px;
+        border: 1px solid #000;
+        &.dead{
+            background: #858585;
+        }
+        &.alive{
+            background: #2d4;
+        }
+    }
+}
