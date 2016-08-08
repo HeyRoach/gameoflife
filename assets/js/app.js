@@ -4504,83 +4504,77 @@ var life = {
     }
 }
 
-jQuery(document).ready(function($) {
-    $(".tests").click(function(event) {
-        tests.start();
-    });
+QUnit.test("Initial test", function(assert) {
+    var cells = view.init(10, 12);
+    assert.deepEqual(Object.keys(cells).length, 12, "y table size test passed");
+    assert.deepEqual(Object.keys(cells[0]).length, 10, "x table size  test passed");
 });
 
-var tests = {
-    start: function(){
-        this.initial();
-        this.cellsCount();
-        this.lifeIteration();
-    },
-    initial: function(){
-        QUnit.test( "Initial test", function( assert ) {
-            var cells = view.init(10,12);
-            assert.deepEqual( Object.keys(cells).length , 12, "y table size test passed" );
-            assert.deepEqual( Object.keys(cells[0]).length , 10, "x table size  test passed" );
-        });
-    },
-    cellsCount: function(){
-        QUnit.test( "Count cells", function( assert ) {
-            view.init(10,10);
-            view.render([
-                [0,1],
-                [0,2]
-            ]);
-            assert.deepEqual( $(".alive").length , 2, "2 alive cells test passed" );
-            view.render([
-                [0,1],
-                [0,2],
-                [1,2],
-                [4,4],
-                [5,5]
-            ]);
-            assert.deepEqual( $(".alive").length , 5, "5 alive cells test passed" );
-            assert.deepEqual( $(".dead").length , 95, "95 dead cells test passed" );
-            view.render([]);
-            assert.deepEqual( $(".alive").length , 0, "0 alive cells test passed" );
-            assert.deepEqual( $(".dead").length , 100, "100 dead cells test passed" );
-        });
-    },
-    lifeIteration: function(){
-        QUnit.test( "Life iteration tests", function( assert ) {
-            view.init(30,20);
-            view.render([
-                [0,1],
-                [0,2]
-            ]);
-            assert.deepEqual( life.iteration().length , 0, "all died test passed" );
-            view.render([
-                [1,1],
-                [1,2],
-                [1,3]
-            ]);
-            assert.deepEqual( life.iteration(), [[0,2],[1,2],[2,2]], "line test passed" );
-            view.render([
-                [3,5],
-                [4,5],
-                [5,5],
-                [5,4],
-                [4,3]
-            ]);
-            assert.deepEqual( life.iteration(), [[3,4],[4,5],[4,6],[5,4],[5,5]], "glider test passed" );
-        });
-    }
-}
+QUnit.test("Count cells", function(assert) {
+    view.init(10, 10);
+    view.render([
+        [0, 1],
+        [0, 2]
+    ]);
+    assert.deepEqual($(".alive").length, 2, "2 alive cells test passed");
+    view.render([
+        [0, 1],
+        [0, 2],
+        [1, 2],
+        [4, 4],
+        [5, 5]
+    ]);
+    assert.deepEqual($(".alive").length, 5, "5 alive cells test passed");
+    assert.deepEqual($(".dead").length, 95, "95 dead cells test passed");
+    view.render([]);
+    assert.deepEqual($(".alive").length, 0, "0 alive cells test passed");
+    assert.deepEqual($(".dead").length, 100, "100 dead cells test passed");
+});
+
+QUnit.test("Life iteration tests", function(assert) {
+    view.init(30, 20);
+    view.render([
+        [0, 1],
+        [0, 2]
+    ]);
+    assert.deepEqual(life.iteration().length, 0, "all died test passed");
+    view.render([
+        [1, 1],
+        [1, 2],
+        [1, 3]
+    ]);
+    assert.deepEqual(life.iteration(), [
+        [0, 2],
+        [1, 2],
+        [2, 2]
+    ], "line test passed");
+    view.render([
+        [3, 5],
+        [4, 5],
+        [5, 5],
+        [5, 4],
+        [4, 3]
+    ]);
+    assert.deepEqual(life.iteration(), [
+        [3, 4],
+        [4, 5],
+        [4, 6],
+        [5, 4],
+        [5, 5]
+    ], "glider test passed");
+});
 
 jQuery(document).ready(function($) {
     view.init(30, 20);
 
     $("table").on('click', 'td', function(event) {
         event.preventDefault();
-        var cell = this.id.split("#");
+        var x = $(this).attr('x');
+        var y = $(this).attr('y');
         if($(this).hasClass('dead')){
-            view.setState(cell[0], cell[1], "alive");
+            view.setState(y, x, "alive");
         }else{
-            view.setState(cell[0], cell[1], "dead");
+            view.setState(y, x, "dead");
         }
     });
 
@@ -4595,34 +4589,32 @@ jQuery(document).ready(function($) {
 });
 
 var view = {
-    table: document.getElementById("view"),
+    table: $("#view"),
     x: 0,
     y: 0,
     init: function(x, y) {
         this.cells = {},
-        this.table.innerHTML = '';
+        this.table.html("");
         this.x = x;
         this.y = y;
         for (var iy = 0; iy < y; iy++) {
             this.cells[iy] = {};
-            var row = document.createElement("tr");
+            var row = $("<tr></tr>");
             for (var ix = 0; ix < x; ix++) {
-                var cell = document.createElement("td");
-                cell.id = iy+"#"+ix;
-                cell.className = "dead";
-                row.appendChild(cell);
+                var cell = $("<td class='dead'></td>").attr({'x': ix,'y': iy});
+                row.append(cell);
                 this.cells[iy][ix] = {
                     state: "dead",
                     cell: cell,
                 };
             }
-            this.table.appendChild(row);
+            this.table.append(row);
         }
         return this.cells;
     },
-    setState: function(x, y, state){
-        this.cells[x][y].state = state;
-        this.cells[x][y].cell.className = state;
+    setState: function(y, x, state){
+        this.cells[y][x].state = state;
+        this.cells[y][x].cell.removeClass('dead alive').addClass(state)
     },
     render: function(array){
         for (var iy = 0; iy < this.y; iy++) {

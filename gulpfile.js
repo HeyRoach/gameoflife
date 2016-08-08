@@ -24,3 +24,5 @@ gulp.task('css', function() {
         .pipe(csso())
         .pipe(gulp.dest('./assets/css'));
 });
+
+gulp.task('build', ['js', 'css']);

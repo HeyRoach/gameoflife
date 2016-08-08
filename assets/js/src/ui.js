@@ -3,11 +3,12 @@ jQuery(document).ready(function($) {
 
     $("table").on('click', 'td', function(event) {
         event.preventDefault();
-        var cell = this.id.split("#");
+        var x = $(this).attr('x');
+        var y = $(this).attr('y');
         if($(this).hasClass('dead')){
-            view.setState(cell[0], cell[1], "alive");
+            view.setState(y, x, "alive");
         }else{
-            view.setState(cell[0], cell[1], "dead");
+            view.setState(y, x, "dead");
         }
     });
 

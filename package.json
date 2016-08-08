@@ -1,0 +1,29 @@
+{
+  "name": "gameoflife",
+  "version": "1.0.0",
+  "description": "game of life algorithm",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp-concat": "^2.6.0",
+    "gulp": "^3.9.1",
+    "gulp-csso": "^2.0.0",
+    "gulp-myth": "^1.1.0",
+    "gulp-sass": "^2.3.2",
+    "gulp-uglify": "^2.0.0",
+    "gulp-watch": "^4.3.9"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "build": "gulp build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HeyRoach/gameoflife.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HeyRoach/gameoflife/issues"
+  },
+  "homepage": "https://github.com/HeyRoach/gameoflife#readme"
+}
