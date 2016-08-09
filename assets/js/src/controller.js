@@ -11,13 +11,17 @@ jQuery(document).ready(function($) {
             view.setState(y, x, "dead");
         }
     });
-
     $(".start").click(function(event) {
-        life.start($(".speed").val());
+        $(".status").text("playing");
+        model.timer = setInterval( function() {
+            var c = model.iteration(view.cells, view.x, view.y);
+            view.render(c);
+        } , parseInt($(".speed").val()));
     });
 
     $(".stop").click(function(event) {
-        life.stop();
+        $(".status").text("stopped");
+        clearInterval(model.timer);
     });
 
 });

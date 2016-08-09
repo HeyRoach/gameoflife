@@ -1,18 +1,10 @@
 # Getting Started
 
-#### 1. Install gulp globally:
-
+#### 1. Install gulp and plugins in project directory:
 ```sh
-$ npm install gulp —global
+$ npm install
 ```
-#### 2. Install gulp plugins in project directory:
+#### 2. Build :
 ```sh
-$ npm install gulp gulp-concat gulp-csso gulp-myth gulp-sass gulp-uglify
-```
-#### 3. Run (also change directory: node_modules/.bin ):
-```sh
-$ gulp js
-```
-```sh
-$ gulp css
+$ npm run build
 ```

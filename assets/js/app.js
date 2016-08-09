@@ -4441,65 +4441,82 @@ QUnit.diff = ( function() {
 
 }() );
 
-var life = {
-    timer: null,
-    start: function(speed) {
+jQuery(document).ready(function($) {
+    view.init(30, 20);
+
+    $("table").on('click', 'td', function(event) {
+        event.preventDefault();
+        var x = $(this).attr('x');
+        var y = $(this).attr('y');
+        if($(this).hasClass('dead')){
+            view.setState(y, x, "alive");
+        }else{
+            view.setState(y, x, "dead");
+        }
+    });
+    $(".start").click(function(event) {
         $(".status").text("playing");
-        this.timer = setInterval( function() {
-            life.iteration();
-        } , parseInt(speed));
-    },
-    stop: function(){
+        model.timer = setInterval( function() {
+            var c = model.iteration(view.cells, view.x, view.y);
+            view.render(c);
+        } , parseInt($(".speed").val()));
+    });
+
+    $(".stop").click(function(event) {
         $(".status").text("stopped");
-        clearInterval(this.timer);
-    },
-    iteration: function() {
+        clearInterval(model.timer);
+    });
+
+});
+
+var model = {
+    timer: null,
+    iteration: function(cells, x, y) {
         var lifeCells = [];
-        for (var iy = 0; iy < view.y; iy++) {
-            for (var ix = 0; ix < view.x; ix++) {
+        for (var iy = 0; iy < y; iy++) {
+            for (var ix = 0; ix < x; ix++) {
                 var nearby = 0;
 
                 if (ix > 0 && iy > 0)
-                    if (view.cells[iy - 1][ix - 1].state == "alive")
+                    if (cells[iy - 1][ix - 1].state == "alive")
                         nearby++;
                 if (iy > 0)
-                    if (view.cells[iy - 1][ix].state == "alive")
+                    if (cells[iy - 1][ix].state == "alive")
                         nearby++;
                 if (ix > 0)
-                    if (view.cells[iy][ix - 1].state == "alive")
+                    if (cells[iy][ix - 1].state == "alive")
                         nearby++;
 
-                if (ix > 0 && iy < view.y - 1)
-                    if (view.cells[iy + 1][ix - 1].state == "alive")
+                if (ix > 0 && iy < y - 1)
+                    if (cells[iy + 1][ix - 1].state == "alive")
                         nearby++;
 
-                if (iy > 0 && ix < view.x - 1)
-                    if (view.cells[iy - 1][ix + 1].state == "alive")
+                if (iy > 0 && ix < x - 1)
+                    if (cells[iy - 1][ix + 1].state == "alive")
                         nearby++;
 
-                if (ix < view.x - 1)
-                    if (view.cells[iy][ix + 1].state == "alive")
+                if (ix < x - 1)
+                    if (cells[iy][ix + 1].state == "alive")
                         nearby++;
 
-                if (iy < view.y - 1)
-                    if (view.cells[iy + 1][ix].state == "alive")
+                if (iy < y - 1)
+                    if (cells[iy + 1][ix].state == "alive")
                         nearby++;
 
-                if (iy < view.y - 1 && ix < view.x - 1)
-                    if (view.cells[iy + 1][ix + 1].state == "alive")
+                if (iy < y - 1 && ix < x - 1)
+                    if (cells[iy + 1][ix + 1].state == "alive")
                         nearby++;
 
-                if(view.cells[iy][ix].state=="dead" && nearby==3){
+                if(cells[iy][ix].state=="dead" && nearby==3){
                     lifeCells.push([iy,ix]);
                 }
 
-                if(view.cells[iy][ix].state=="alive" && (nearby==2 || nearby==3)){
+                if(cells[iy][ix].state=="alive" && (nearby==2 || nearby==3)){
                     lifeCells.push([iy,ix]);
                 }
 
             }
         }
-        view.render(lifeCells);
         return lifeCells;
     }
 }
@@ -4537,13 +4554,13 @@ QUnit.test("Life iteration tests", function(assert) {
         [0, 1],
         [0, 2]
     ]);
-    assert.deepEqual(life.iteration().length, 0, "all died test passed");
+    assert.deepEqual(model.iteration(view.cells, view.x, view.y).length, 0, "all died test passed");
     view.render([
         [1, 1],
         [1, 2],
         [1, 3]
     ]);
-    assert.deepEqual(life.iteration(), [
+    assert.deepEqual(model.iteration(view.cells, view.x, view.y), [
         [0, 2],
         [1, 2],
         [2, 2]
@@ -4555,37 +4572,13 @@ QUnit.test("Life iteration tests", function(assert) {
         [5, 4],
         [4, 3]
     ]);
-    assert.deepEqual(life.iteration(), [
+    assert.deepEqual(model.iteration(view.cells, view.x, view.y), [
         [3, 4],
         [4, 5],
         [4, 6],
         [5, 4],
         [5, 5]
     ], "glider test passed");
-});
-
-jQuery(document).ready(function($) {
-    view.init(30, 20);
-
-    $("table").on('click', 'td', function(event) {
-        event.preventDefault();
-        var x = $(this).attr('x');
-        var y = $(this).attr('y');
-        if($(this).hasClass('dead')){
-            view.setState(y, x, "alive");
-        }else{
-            view.setState(y, x, "dead");
-        }
-    });
-
-    $(".start").click(function(event) {
-        life.start($(".speed").val());
-    });
-
-    $(".stop").click(function(event) {
-        life.stop();
-    });
-
 });
 
 var view = {
@@ -4614,7 +4607,7 @@ var view = {
     },
     setState: function(y, x, state){
         this.cells[y][x].state = state;
-        this.cells[y][x].cell.removeClass('dead alive').addClass(state)
+        this.cells[y][x].cell.removeClass('dead alive').addClass(state);
     },
     render: function(array){
         for (var iy = 0; iy < this.y; iy++) {

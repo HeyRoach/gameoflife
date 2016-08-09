@@ -31,13 +31,13 @@ QUnit.test("Life iteration tests", function(assert) {
         [0, 1],
         [0, 2]
     ]);
-    assert.deepEqual(life.iteration().length, 0, "all died test passed");
+    assert.deepEqual(model.iteration(view.cells, view.x, view.y).length, 0, "all died test passed");
     view.render([
         [1, 1],
         [1, 2],
         [1, 3]
     ]);
-    assert.deepEqual(life.iteration(), [
+    assert.deepEqual(model.iteration(view.cells, view.x, view.y), [
         [0, 2],
         [1, 2],
         [2, 2]
@@ -49,7 +49,7 @@ QUnit.test("Life iteration tests", function(assert) {
         [5, 4],
         [4, 3]
     ]);
-    assert.deepEqual(life.iteration(), [
+    assert.deepEqual(model.iteration(view.cells, view.x, view.y), [
         [3, 4],
         [4, 5],
         [4, 6],

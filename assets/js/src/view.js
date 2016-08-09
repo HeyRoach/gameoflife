@@ -24,7 +24,7 @@ var view = {
     },
     setState: function(y, x, state){
         this.cells[y][x].state = state;
-        this.cells[y][x].cell.removeClass('dead alive').addClass(state)
+        this.cells[y][x].cell.removeClass('dead alive').addClass(state);
     },
     render: function(array){
         for (var iy = 0; iy < this.y; iy++) {

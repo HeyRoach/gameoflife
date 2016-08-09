@@ -3,7 +3,8 @@ var gulp = require('gulp'),
     myth = require('gulp-myth'),
     uglify = require('gulp-uglify'),
     sass = require('gulp-sass'),
-    concat = require('gulp-concat');
+    concat = require('gulp-concat'),
+    watch = require('gulp-watch');
 
 gulp.task('js', function() {
     gulp.src([
@@ -22,7 +23,17 @@ gulp.task('css', function() {
         .pipe(sass())
         .pipe(myth())
         .pipe(csso())
+        // .pipe(watch(['./assets/css/src/*.css', './assets/css/src/*.scss']))
         .pipe(gulp.dest('./assets/css'));
+});
+
+gulp.task('watch', function() {
+    gulp.watch('./assets/css/**', function(event) {
+        gulp.run('css');
+    })
+    gulp.watch('./assets/js/**', function(event) {
+        gulp.run('js');
+    })
 });
 
 gulp.task('build', ['js', 'css']);
