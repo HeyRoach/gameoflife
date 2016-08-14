@@ -1,51 +1,40 @@
-var model = {
+const model = {
     timer: null,
-    iteration: function(cells, x, y) {
-        var lifeCells = [];
-        for (var iy = 0; iy < y; iy++) {
-            for (var ix = 0; ix < x; ix++) {
-                var nearby = 0;
+    matrix: [[-1, -1], [0, -1], [1, -1],
+             [-1, 0], [1, 0],
+             [-1, 1], [0, 1], [1, 1]],
+    iteration(cells, x, y) {
+        let lifeCells = [];
 
-                if (ix > 0 && iy > 0)
-                    if (cells[iy - 1][ix - 1].state == "alive")
-                        nearby++;
-                if (iy > 0)
-                    if (cells[iy - 1][ix].state == "alive")
-                        nearby++;
-                if (ix > 0)
-                    if (cells[iy][ix - 1].state == "alive")
-                        nearby++;
+        for (let iy = 0; iy < y; iy++) {
+            for (let ix = 0; ix < x; ix++) {
+                let nearby = 0;
 
-                if (ix > 0 && iy < y - 1)
-                    if (cells[iy + 1][ix - 1].state == "alive")
-                        nearby++;
+                $.each(model.matrix, function(index, matrix) {
+                    if (cells[iy + matrix[0]] === undefined || cells[iy + matrix[0]][ix + matrix[1]] === undefined) {
+                        return;
+                    }
 
-                if (iy > 0 && ix < x - 1)
-                    if (cells[iy - 1][ix + 1].state == "alive")
+                    if (cells[iy + matrix[0]][ix + matrix[1]].state == 'alive') {
                         nearby++;
+                    }
+                });
 
-                if (ix < x - 1)
-                    if (cells[iy][ix + 1].state == "alive")
-                        nearby++;
 
-                if (iy < y - 1)
-                    if (cells[iy + 1][ix].state == "alive")
-                        nearby++;
-
-                if (iy < y - 1 && ix < x - 1)
-                    if (cells[iy + 1][ix + 1].state == "alive")
-                        nearby++;
-
-                if(cells[iy][ix].state=="dead" && nearby==3){
-                    lifeCells.push([iy,ix]);
+                switch (nearby) {
+                    case 3:
+                        lifeCells.push([iy, ix]);
+                        break;
+                    case 2:
+                        if ( cells[iy][ix].state=='alive' ){
+                            lifeCells.push([iy, ix]);                            
+                        }
+                        break;
+                    default:
+                        break;
                 }
-
-                if(cells[iy][ix].state=="alive" && (nearby==2 || nearby==3)){
-                    lifeCells.push([iy,ix]);
-                }
-
             }
         }
         return lifeCells;
-    }
-}
+    },
+};
