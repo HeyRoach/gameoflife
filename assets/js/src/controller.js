@@ -1,26 +1,29 @@
 jQuery(document).ready(function($) {
+    model.init(30, 20)
     view.init(30, 20);
 
     $('table').on('click', 'td', function(event) {
         event.preventDefault();
-        let x = $(this).attr('x');
-        let y = $(this).attr('y');
-        if ($(this).hasClass('dead')){
-            view.setState(y, x, 'alive');
+        let x = $(this).attr('x'),
+            y = $(this).attr('y');
+        if (model.getState(x, y)=="dead"){
+            model.setState(x, y, 'alive');
         } else {
-            view.setState(y, x, 'dead');
+            model.setState(x, y, 'dead');
         }
+        view.render(model.getCells());
     });
+
     $('.start').click(function(event) {
-        $('.status').text('playing');
-        model.timer = setInterval( function() {
-            let c = model.iteration(view.cells, view.x, view.y);
-            view.render(c);
+        view.setStatus("playing");
+        let timer = setInterval( function() {
+            view.render(model.iteration());
         } , parseInt($('.speed').val()));
+        model.setTimer(timer);
     });
 
     $('.stop').click(function(event) {
-        $('.status').text('stopped');
-        clearInterval(model.timer);
+        view.setStatus("stopped");
+        model.clearTimer();
     });
 });

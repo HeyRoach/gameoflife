@@ -1,7 +1,7 @@
 debug.log
 node_modules
-# assets/css/styles.min.css
-# assets/js/app.js
+assets/css/styles.min.css
+assets/js/app.js
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
@@ -49,3 +49,4 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+assets/js/app.js

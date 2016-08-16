@@ -1,21 +1,54 @@
 const model = {
     timer: null,
+    cells: {},
     matrix: [[-1, -1], [0, -1], [1, -1],
              [-1, 0], [1, 0],
              [-1, 1], [0, 1], [1, 1]],
-    iteration(cells, x, y) {
+    setTimer(timer){
+        this.timer=timer;
+    },
+    clearTimer(){
+        clearInterval(this.timer);
+    },
+    init(x, y, cells = false){
+        this.cells = {};
+        this.x = x;
+        this.y = y;
+        for (let iy = 0; iy < y; iy++) {
+            this.cells[iy] = {};
+            for (let ix = 0; ix < x; ix++) {
+                this.cells[iy][ix] = {state: 'dead'};
+            }
+        }
+        if(cells){
+            cells.forEach(c => {
+                this.cells[c[0]][c[1]].state = "alive";
+            });
+        }
+        return this.cells;
+    },
+    getState(x, y){
+        return this.cells[y][x].state;
+    },
+    setState(x, y, state){
+        this.cells[y][x].state = state;
+    },
+    getCells(){
+        return this.cells;
+    },
+    iteration() {
         let lifeCells = [];
 
-        for (let iy = 0; iy < y; iy++) {
-            for (let ix = 0; ix < x; ix++) {
+        for (let iy = 0; iy < this.y; iy++) {
+            for (let ix = 0; ix < this.x; ix++) {
                 let nearby = 0;
 
-                $.each(model.matrix, function(index, matrix) {
-                    if (cells[iy + matrix[0]] === undefined || cells[iy + matrix[0]][ix + matrix[1]] === undefined) {
+                this.matrix.forEach(m => {
+                    if (!this.cells[iy + m[0]] || !this.cells[iy + m[0]][ix + m[1]]) {
                         return;
                     }
 
-                    if (cells[iy + matrix[0]][ix + matrix[1]].state == 'alive') {
+                    if (this.cells[iy + m[0]][ix + m[1]].state == 'alive') {
                         nearby++;
                     }
                 });
@@ -26,8 +59,8 @@ const model = {
                         lifeCells.push([iy, ix]);
                         break;
                     case 2:
-                        if ( cells[iy][ix].state=='alive' ){
-                            lifeCells.push([iy, ix]);                            
+                        if ( this.cells[iy][ix].state=='alive' ){
+                            lifeCells.push([iy, ix]);
                         }
                         break;
                     default:
@@ -35,6 +68,7 @@ const model = {
                 }
             }
         }
-        return lifeCells;
+        this.init(this.x, this.y, lifeCells);
+        return this.cells;
     },
 };
